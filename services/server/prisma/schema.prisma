@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String?   @default("USER")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sessions  Session[] // Thêm relation với Session
+  event Event[]// Thêm relation với event
+  category Category[] // Thêm relation với category
+}
+
+model Session {
+  id           Int      @id @default(autoincrement())
+  token        String   @unique
+  refreshToken String?  @unique 
+  isValid      Boolean  @default(true)
+  deviceInfo   String?  // Thông tin thiết bị đăng nhập
+  lastActivity DateTime @default(now())
+  expiresAt    DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([token])
+  @@index([userId])
+}
+
+enum RecurrenceType {
+  NONE
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+  CUSTOM
+}
+
+enum ReminderType {
+  NONE
+  EMAIL
+  PUSH_NOTIFICATION
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  location    String?
+  startTime   DateTime
+  endTime     DateTime
+  isAllDay    Boolean  @default(false)
+  
+  // Recurrence
+  recurrence      RecurrenceType @default(NONE)
+  recurrenceRule  String?        // RRULE format for custom recurrence
+  
+  // Reminders
+  reminderType    ReminderType   @default(NONE)
+  reminderTime    Int?           // Minutes before event
+  // Categorization
+  categoryId  Int?
+  color       String?  // Hex color code
+  
+  // Relations
+  category    Category?   @relation(fields: [categoryId], references: [id])
+  userId      Int        // Owner of the event
+  user        User       @relation(fields: [userId], references: [id])
+  
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([startTime, endTime])
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String
+  color       String  
+  userId      Int     
+  user        User     @relation(fields: [userId], references: [id])
+  events      Event[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([userId])
+}

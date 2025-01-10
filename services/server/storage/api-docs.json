@@ -1,0 +1,809 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/v1.0/auth/google/verify": {
+      "post": {
+        "operationId": "AuthController_googleAuthVerify_v1.0",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleAuthDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1.0/auth/signup": {
+      "post": {
+        "operationId": "AuthController_register_v1.0",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ManualSignupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1.0/auth/login": {
+      "post": {
+        "operationId": "AuthController_login_v1.0",
+        "parameters": [
+          {
+            "name": "user-agent",
+            "required": true,
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1.0/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh_v1.0",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1.0/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout_v1.0",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1.0/auth/sessions": {
+      "get": {
+        "operationId": "AuthController_getSessions_v1.0",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1.0/auth/sessions/{sessionId}": {
+      "delete": {
+        "operationId": "AuthController_revokeSession_v1.0",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1.0/auth/sessions/revoke-all": {
+      "post": {
+        "operationId": "AuthController_revokeAllSessions_v1.0",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1.0/auth/role": {
+      "post": {
+        "operationId": "AuthController_setRole_v1.0",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1.0/auth/admin/profile": {
+      "get": {
+        "operationId": "AuthController_getAdminProfile_v1.0",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1.0/auth/user/profile": {
+      "get": {
+        "operationId": "AuthController_getUserProfile_v1.0",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1.0/users": {
+      "get": {
+        "operationId": "UserController_getUsers_v1.0",
+        "parameters": [
+          {
+            "name": "take",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "ID của item cuối cùng trong lần fetch trước",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách người dùng thành công"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Lấy danh sách người dùng với cursor pagination",
+        "tags": [
+          "Users"
+        ]
+      },
+      "post": {
+        "operationId": "UserController_createUser_v1.0",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Tạo người dùng thành công"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/v1.0/users/{id}": {
+      "get": {
+        "operationId": "UserController_getUser_v1.0",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy thông tin người dùng thành công"
+          },
+          "404": {
+            "description": "Không tìm thấy người dùng"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Users"
+        ]
+      },
+      "put": {
+        "operationId": "UserController_updateUser_v1.0",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cập nhật người dùng thành công"
+          },
+          "404": {
+            "description": "Không tìm thấy người dùng"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Users"
+        ]
+      },
+      "delete": {
+        "operationId": "UserController_deleteUser_v1.0",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Xóa người dùng thành công"
+          },
+          "404": {
+            "description": "Không tìm thấy người dùng"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/v1.0/users/email/{email}": {
+      "get": {
+        "operationId": "UserController_getUserByEmail_v1.0",
+        "parameters": [
+          {
+            "name": "email",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tìm người dùng theo email thành công"
+          },
+          "404": {
+            "description": "Không tìm thấy người dùng"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/v1.0/events": {
+      "post": {
+        "operationId": "EventsController_create_v1.0",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEventDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Event created successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Events"
+        ]
+      },
+      "get": {
+        "operationId": "EventsController_findAll_v1.0",
+        "parameters": [
+          {
+            "name": "startDate",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "categoryId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return list of events."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/v1.0/events/{id}": {
+      "get": {
+        "operationId": "EventsController_findOne_v1.0",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Return a single event."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Events"
+        ]
+      },
+      "patch": {
+        "operationId": "EventsController_update_v1.0",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEventDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Event updated successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Events"
+        ]
+      },
+      "delete": {
+        "operationId": "EventsController_remove_v1.0",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Event deleted successfully."
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Events"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "nestjs-prisma-postgresql",
+    "description": "Poject Description description",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "Project Tag",
+      "description": ""
+    }
+  ],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "GoogleAuthDto": {
+        "type": "object",
+        "properties": {
+          "id_token": {
+            "type": "string",
+            "example": "eyJhbGci..",
+            "description": "The id token from Google OAuth2"
+          }
+        },
+        "required": [
+          "id_token"
+        ]
+      },
+      "ManualSignupDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "John Doe",
+            "description": "Tên người dùng"
+          },
+          "email": {
+            "type": "string",
+            "example": "user@example.com",
+            "description": "Email người dùng"
+          },
+          "password": {
+            "type": "string",
+            "example": "Password123!",
+            "description": "Mật khẩu người dùng. Phải có ít nhất 8 ký tự, chứa ít nhất một chữ cái viết hoa, một số và một ký tự đặc biệt."
+          },
+          "confirm_password": {
+            "type": "string",
+            "example": "Password123!",
+            "description": "Xác nhận mật khẩu"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "password",
+          "confirm_password"
+        ]
+      },
+      "RoleDto": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "example": "admin",
+            "description": "Vai trò người dùng"
+          }
+        },
+        "required": [
+          "role"
+        ]
+      },
+      "CreateEventDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Team Meeting"
+          },
+          "description": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "startTime": {
+            "type": "string",
+            "example": "2024-03-20T10:00:00Z"
+          },
+          "endTime": {
+            "type": "string",
+            "example": "2024-03-20T11:00:00Z"
+          },
+          "isAllDay": {
+            "type": "boolean",
+            "default": false
+          },
+          "recurrence": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "DAILY",
+              "WEEKLY",
+              "MONTHLY",
+              "YEARLY",
+              "CUSTOM"
+            ],
+            "default": "NONE"
+          },
+          "recurrenceRule": {
+            "type": "string"
+          },
+          "reminderType": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "EMAIL",
+              "PUSH_NOTIFICATION"
+            ],
+            "default": "NONE"
+          },
+          "reminderTime": {
+            "type": "number"
+          },
+          "categoryId": {
+            "type": "number"
+          },
+          "color": {
+            "type": "string",
+            "example": "#FF5733"
+          }
+        },
+        "required": [
+          "title",
+          "startTime",
+          "endTime",
+          "recurrence",
+          "reminderType"
+        ]
+      },
+      "UpdateEventDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Team Meeting"
+          },
+          "description": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "startTime": {
+            "type": "string",
+            "example": "2024-03-20T10:00:00Z"
+          },
+          "endTime": {
+            "type": "string",
+            "example": "2024-03-20T11:00:00Z"
+          },
+          "isAllDay": {
+            "type": "boolean",
+            "default": false
+          },
+          "recurrence": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "DAILY",
+              "WEEKLY",
+              "MONTHLY",
+              "YEARLY",
+              "CUSTOM"
+            ],
+            "default": "NONE"
+          },
+          "recurrenceRule": {
+            "type": "string"
+          },
+          "reminderType": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "EMAIL",
+              "PUSH_NOTIFICATION"
+            ],
+            "default": "NONE"
+          },
+          "reminderTime": {
+            "type": "number"
+          },
+          "categoryId": {
+            "type": "number"
+          },
+          "color": {
+            "type": "string",
+            "example": "#FF5733"
+          }
+        }
+      }
+    }
+  }
+}
