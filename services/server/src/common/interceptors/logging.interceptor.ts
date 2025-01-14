@@ -8,6 +8,7 @@ import {
 import { Observable } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { Request, Response } from 'express';
+import { cloneDeep } from 'lodash';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
@@ -111,7 +112,7 @@ export class LoggingInterceptor implements NestInterceptor {
   private sanitizeData(data: any): any {
     if (!data) return data;
 
-    const sanitized = { ...data };
+    const sanitized = cloneDeep(data);
     const sensitiveFields = [
       'password',
       'token',
@@ -131,6 +132,24 @@ export class LoggingInterceptor implements NestInterceptor {
     Object.keys(obj).forEach((key) => {
       if (sensitiveFields.includes(key.toLowerCase())) {
         obj[key] = '***REDACTED***';
+      } // Xử lý array
+      else if (Array.isArray(obj[key])) {
+        // Nếu là array, chỉ lấy phần tử đầu tiên và thêm length
+        const arrayLength = obj[key].length;
+        if (arrayLength > 0) {
+          const firstItem = obj[key][0];
+          // Đệ quy sanitize cho item đầu tiên nếu nó là object
+          if (typeof firstItem === 'object') {
+            this.recursiveSanitize(firstItem, sensitiveFields);
+          }
+          obj[key] = {
+            first: firstItem,
+            total: arrayLength,
+            message: `... and ${arrayLength - 1} more items`,
+          };
+        } else {
+          obj[key] = { total: 0, message: 'Empty array' };
+        }
       } else if (typeof obj[key] === 'object') {
         this.recursiveSanitize(obj[key], sensitiveFields);
       }

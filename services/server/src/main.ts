@@ -4,7 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { writeFile } from 'fs/promises';
 import { AppModule } from 'src/app.module';
-import { TransformInterceptor } from 'src/common/interceptors/transform.interceptors';
+import { TransformInterceptor } from 'src/common/interceptors/transform.interceptor';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap'); // Tạo logger instance

@@ -7,19 +7,22 @@ import { LoggingInterceptor } from 'src/common/interceptors/logging.interceptor'
 import configuration from 'src/config/configuration';
 import { AuthModule } from 'src/modules/auth/auth.module';
 import { EventsModule } from 'src/modules/events/events.module';
+import { FirebaseModule } from 'src/modules/firebase/firebase.module';
 import { JobsModule } from 'src/modules/jobs/jobs.module';
-// import { FirebaseModule } from 'src/modules/firebase/firebase.module';
+import { RedisModule } from 'src/modules/redis/redis.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       load: [configuration],
       isGlobal: true,
     }),
-    AuthModule,
     ScheduleModule.forRoot(),
+    RedisModule,
+    FirebaseModule,
+    AuthModule,
     JobsModule,
     EventsModule,
-    // FirebaseModule,
   ],
   providers: [
     {

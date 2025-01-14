@@ -105,6 +105,83 @@
         ]
       }
     },
+    "/v1.0/auth/change-password": {
+      "post": {
+        "operationId": "AuthController_changePassword_v1.0",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1.0/auth/forgot-password": {
+      "post": {
+        "operationId": "AuthController_forgotPassword_v1.0",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1.0/auth/reset-password": {
+      "post": {
+        "operationId": "AuthController_resetPassword_v1.0",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
     "/v1.0/auth/sessions": {
       "get": {
         "operationId": "AuthController_getSessions_v1.0",
@@ -246,6 +323,7 @@
             "name": "take",
             "required": false,
             "in": "query",
+            "description": "Số lượng item muốn lấy",
             "schema": {
               "default": 10,
               "type": "number"
@@ -257,6 +335,7 @@
             "in": "query",
             "description": "ID của item cuối cùng trong lần fetch trước",
             "schema": {
+              "default": 0,
               "type": "string"
             }
           },
@@ -264,6 +343,7 @@
             "name": "sortBy",
             "required": false,
             "in": "query",
+            "description": "Sắp xếp theo ...",
             "schema": {
               "type": "string"
             }
@@ -272,11 +352,21 @@
             "name": "sortOrder",
             "required": false,
             "in": "query",
+            "description": "Chiều sắp xếp",
             "schema": {
               "enum": [
                 "asc",
                 "desc"
               ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Tìm kiếm theo name hoặc email",
+            "schema": {
               "type": "string"
             }
           }
@@ -291,7 +381,7 @@
             "bearer": []
           }
         ],
-        "summary": "Lấy danh sách người dùng với cursor pagination",
+        "summary": "Lấy danh sách người dùng",
         "tags": [
           "Users"
         ]
@@ -660,6 +750,47 @@
           "email",
           "password",
           "confirm_password"
+        ]
+      },
+      "ChangePasswordDto": {
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": "string"
+          },
+          "newPassword": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "currentPassword",
+          "newPassword"
+        ]
+      },
+      "ForgotPasswordDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "ResetPasswordDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "newPassword": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "newPassword"
         ]
       },
       "RoleDto": {

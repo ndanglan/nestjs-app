@@ -21,6 +21,7 @@ import {
 import { User } from '@prisma/client';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { RateLimitGuard } from 'src/common/guards/rate-limit.guard';
 import { RolesGuard } from 'src/common/guards/role.guard';
 import { Role } from 'src/enums/role.enum';
 import { CursorPaginationDto } from 'src/helpers/pagination/dto';
@@ -28,14 +29,14 @@ import { UserService } from './user.service';
 
 @ApiTags('Users')
 @Controller('users')
-@UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
 @Roles(Role.Admin)
+@UseGuards(JwtAuthGuard, RolesGuard, RateLimitGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Lấy danh sách người dùng với cursor pagination' })
+  @ApiOperation({ summary: 'Lấy danh sách người dùng' })
   @ApiResponse({
     status: 200,
     description: 'Lấy danh sách người dùng thành công',
@@ -55,7 +56,7 @@ export class UserController {
   })
   @ApiResponse({ status: 404, description: 'Không tìm thấy người dùng' })
   async getUser(@Param('id', ParseIntPipe) id: number) {
-    const user = await this.userService.user({ id });
+    const user = await this.userService.getUserById(id);
     if (!user) {
       throw new NotFoundException('Không tìm thấy người dùng');
     }
@@ -94,7 +95,7 @@ export class UserController {
   ) {
     try {
       // Kiểm tra user tồn tại
-      const existingUser = await this.userService.user({ id });
+      const existingUser = await this.userService.getUserById(id);
       if (!existingUser) {
         throw new NotFoundException('Không tìm thấy người dùng');
       }
@@ -130,7 +131,7 @@ export class UserController {
   async deleteUser(@Param('id', ParseIntPipe) id: number) {
     try {
       // Kiểm tra user tồn tại
-      const existingUser = await this.userService.user({ id });
+      const existingUser = await this.userService.getUserById(id);
       if (!existingUser) {
         throw new NotFoundException('Không tìm thấy người dùng');
       }

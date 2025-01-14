@@ -16,8 +16,11 @@ import { LocalAuthGuard } from 'src/common/guards/local-auth.guard';
 import { RolesGuard } from 'src/common/guards/role.guard';
 import { Role } from 'src/enums/role.enum';
 import { AuthService } from 'src/modules/auth/auth.service';
+import { ChangePasswordDto } from 'src/modules/auth/dto/change-password.dto';
+import { ForgotPasswordDto } from 'src/modules/auth/dto/forgot-password.dto';
 import { GoogleAuthDto } from 'src/modules/auth/dto/google-auth.dto';
 import { ManualSignupDto } from 'src/modules/auth/dto/manual-signup.dto';
+import { ResetPasswordDto } from 'src/modules/auth/dto/reset-password.dto';
 import { RoleDto } from 'src/modules/auth/dto/role.dto';
 import { RequestWithUser } from 'src/types/request.type';
 
@@ -28,7 +31,7 @@ export class AuthController {
 
   @Post('google/verify')
   async googleAuthVerify(@Body() googleAuthBody: GoogleAuthDto) {
-    return this.authService.googleAuth(googleAuthBody.id_token);
+    return this.authService.googleAuthWithFirebase(googleAuthBody.id_token);
   }
 
   @Post('signup')
@@ -66,6 +69,33 @@ export class AuthController {
     return this.authService.logout(token);
   }
 
+  @Post('change-password')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async changePassword(
+    @Request() req: RequestWithUser,
+    @Body() changePasswordDto: ChangePasswordDto,
+  ) {
+    return this.authService.changePassword(
+      req.user.id,
+      changePasswordDto.currentPassword,
+      changePasswordDto.newPassword,
+    );
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(forgotPasswordDto.email);
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return this.authService.resetPassword(
+      resetPasswordDto.token,
+      resetPasswordDto.newPassword,
+    );
+  }
+
   @Get('sessions')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -89,7 +119,8 @@ export class AuthController {
 
   @Post('role')
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
+  @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async setRole(@Request() req, @Body() roleBody: RoleDto) {
     return this.authService.assignRoleToUser(req.user, roleBody.role);
   }
@@ -102,10 +133,10 @@ export class AuthController {
     return req.user;
   }
 
-  @Roles(Role.User)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('user/profile')
   @ApiBearerAuth()
+  @Roles(Role.User, Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   getUserProfile(@Request() req: any) {
     return req.user;
   }

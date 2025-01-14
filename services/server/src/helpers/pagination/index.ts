@@ -14,6 +14,7 @@ export class CursorPaginationHelper {
       cursor,
       sortBy,
       sortOrder,
+      search: params.search,
     };
   }
 

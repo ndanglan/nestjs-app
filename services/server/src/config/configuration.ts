@@ -13,6 +13,9 @@ export default () => ({
     expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES ?? '1d',
     refreshSecret: process.env.JWT_REFRESH_SECRET ?? 'this-is-a-refresh-secret',
     refreshTokenExpires: process.env.JWT_REFRESH_TOKEN_EXPIRES ?? '7d',
+    resetPasswordSecret:
+      process.env.JWT_RESET_PASSWORD_SECRET ??
+      'this-is-a-reset-password-secret',
   },
   cryptojs: {
     secret: process.env.CRYPTOJS_SECRET,
@@ -20,7 +23,13 @@ export default () => ({
   projectName: process.env.PROJECT_NAME ?? 'nestjs-prisma-postgresql',
   firebase: {
     projectId: process.env.FIREBASE_PROJECT_ID,
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
     privateKey: process.env.FIREBASE_PRIVATE_KEY,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+  },
+  redis: {
+    host: process.env.REDIS_HOST,
+    port: parseInt(process.env.REDIS_PORT, 10),
+    password: process.env.REDIS_PASSWORD,
+    ttl: parseInt(process.env.REDIS_TTL, 10),
   },
 });

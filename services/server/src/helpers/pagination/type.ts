@@ -3,6 +3,7 @@ export interface CursorPaginationParams {
   cursor?: string | number;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
+  search?: string;
 }
 
 export interface CursorPaginatedResult<T> {
